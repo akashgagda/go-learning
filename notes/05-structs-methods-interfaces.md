@@ -27,6 +27,34 @@ func (c Circle) Area() float64 {
 - Mental model: a struct says what a value *contains*; an interface says what a value *can do*. An interface is a shopping list of methods — a type matches if it has them, no paperwork.
 - Two ways to trip: declaring `Area(rectangle Rectangle)` as a plain function blocks adding `Area(circle Circle)` (no redeclaration allowed — use methods instead); and "return type must match what you actually return" (`float64`, not the struct).
 
+## Table-driven tests (reusable pattern)
+- The reusable pattern: a slice of anonymous structs where each row is one case (input + expected output), looped with `for _, tt := range areaTests`. Adding a case = adding a row.
+- Reach for it whenever the same assertion repeats with different inputs — you'll meet it again in Maps, Mocking, Reflection, and HTTP route tests in later chapters.
+- Named fields + a `name` field make rows read like facts; wrapping each case in `t.Run(tt.name, ...)` names failures and allows `go test -run TestArea/triangle` to run one case.
+- `%#v` in error messages prints the whole struct (`main.Rectangle{Width:12, Height:6}`), so a failing row is obvious without hunting.
+- Worked example (Triangle, full TDD cycle): add the row → `undefined: Triangle` → define struct → `does not implement Shape (missing method Area)` → stub `return 0` → `got 0 want 36` → implement `(t.Base * t.Height) * 0.5`.
+- Lesson learned: a blanket rename (`want` → `hasArea`) leaked into `TestPerimeter` and its format string. Refactors should touch only what they must.
+
+```go
+areaTests := []struct {
+	name    string
+	shape   Shape
+	hasArea float64
+}{
+	{name: "rectangle", shape: Rectangle{Width: 12, Height: 6}, hasArea: 72.0},
+	{name: "circle", shape: Circle{Radius: 10}, hasArea: 314.1592653589793},
+	{name: "triangle", shape: Triangle{Base: 12, Height: 6}, hasArea: 36.0},
+}
+for _, tt := range areaTests {
+	t.Run(tt.name, func(t *testing.T) {
+		got := tt.shape.Area()
+		if got != tt.hasArea {
+			t.Errorf("%#v got %g want %g", tt.shape, got, tt.hasArea)
+		}
+	})
+}
+```
+
 ## Tests
 `go test ./05-structs-methods-interfaces/...` → `ok example.com/go-learning/05-structs-methods-interfaces`
 
