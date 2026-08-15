@@ -1,3 +1,11 @@
+---
+chapter: 02
+title: Integers
+status: done
+date: 2026-08-15
+tags: [go, chapter]
+---
+
 # Integers
 
 ## Concepts learned
@@ -25,4 +33,5 @@ func ExampleAdd() {
 `go test ./02-integers/...` → ok (TestAdder and ExampleAdd both pass)
 
 ## Self-test
-What makes an example function "testable" — and what changes if you remove the `// Output: 6` comment?
+- What makes an example function "testable"?::With an `// Output:` comment the test harness runs it and asserts the printed output; without it, the example is only compiled, never run. #flashcards
+- What changes if you remove the `// Output: 6` comment from `ExampleAdd`?::The example still compiles but is never executed, so it can rot silently without failing the suite. #flashcards

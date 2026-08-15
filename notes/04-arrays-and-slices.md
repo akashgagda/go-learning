@@ -1,3 +1,11 @@
+---
+chapter: 04
+title: Arrays and Slices
+status: done
+date: 2026-08-15
+tags: [go, chapter]
+---
+
 # Arrays and Slices
 
 ## Concepts learned
@@ -34,4 +42,5 @@ func SumAllTails(numbersToSum ...[]int) []int {
 `go test ./04-arrays-and-slices/...` → `ok example.com/go-learning/04-arrays-and-slices`
 
 ## Self-test
-What does `SumAllTails([]int{}, []int{3, 4, 5})` return, and why doesn't the empty slice panic?
+- What does `SumAllTails([]int{}, []int{3, 4, 5})` return?::`[0, 9]` — the empty slice contributes 0, and `Sum([4, 5])` contributes 9. #flashcards
+- Why doesn't the empty slice panic in `SumAllTails`?::`len(numbers) == 0` is checked first, so `numbers[1:]` never runs on an empty slice — that would panic with `slice bounds out of range [1:0]`. #flashcards

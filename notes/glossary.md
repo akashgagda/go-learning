@@ -1,3 +1,10 @@
+---
+title: Go Vocabulary
+status: done
+date: 2026-08-15
+tags: [go, glossary]
+---
+
 # Go Vocabulary (chapters 1-5)
 
 All terms in Go-only terms, with examples from the course code.
@@ -28,7 +35,7 @@ All terms in Go-only terms, with examples from the course code.
 - `strings.Builder` — growable string buffer (the chapter-03 benchmark win). https://pkg.go.dev/strings#Builder
 
 ## Mental anchors
-- **Receiver vs parameter**: a receiver is *which type owns the behavior* (`c Circle`); a parameter is *what extra input the behavior needs*. That's the whole difference between a method and a function.
-- **Interface vs struct**: an interface lists *what a value can do*; a struct holds *what a value contains*.
-- **Concrete type vs interface**: the concrete type is the real thing with real data; the interface is the job description it qualifies for.
-- **Decoupling**: write against the interface, not the concrete type — then new shapes/cases plug in with zero edits to your code.
+- What is the difference between a receiver and a parameter?::A receiver is which type owns the behavior (`c Circle`); a parameter is what extra input the behavior needs. That's the whole difference between a method and a function. #flashcards
+- What is the difference between an interface and a struct?::An interface lists what a value can do; a struct holds what a value contains. #flashcards
+- What is the difference between a concrete type and an interface?::The concrete type is the real thing with real data; the interface is the job description it qualifies for. #flashcards
+- Why write against an interface instead of a concrete type?::Because then new shapes/cases plug in with zero edits to your code — the code depends only on the interface's methods. #flashcards

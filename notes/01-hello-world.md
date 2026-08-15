@@ -1,3 +1,11 @@
+---
+chapter: 01
+title: Hello, World
+status: done
+date: 2026-08-15
+tags: [go, chapter]
+---
+
 # Hello, World
 
 ## Concepts learned
@@ -35,4 +43,5 @@ func greetingPrefix(language string) (prefix string) {
 `go test ./01-hello-world/...` → ok (4 subtests: people, empty string, Spanish, French)
 
 ## Self-test
-Why does `assertCorrectMessage` accept `testing.TB` instead of `*testing.T`, and what does `t.Helper()` change about failure output?
+- Why does `assertCorrectMessage` accept `testing.TB` instead of `*testing.T`?::Because `testing.TB` is an interface implemented by both `*testing.T` and `*testing.B`, so one helper works for tests and benchmarks. #flashcards
+- What does `t.Helper()` change about failure output?::It marks the function as a helper so failures report the call-site line, not the line inside the helper. #flashcards

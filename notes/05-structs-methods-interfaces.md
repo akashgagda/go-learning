@@ -1,3 +1,11 @@
+---
+chapter: 05
+title: Structs, Methods & Interfaces
+status: done
+date: 2026-08-15
+tags: [go, chapter]
+---
+
 # Structs, Methods & Interfaces
 
 ## Concepts learned
@@ -59,4 +67,5 @@ for _, tt := range areaTests {
 `go test ./05-structs-methods-interfaces/...` → `ok example.com/go-learning/05-structs-methods-interfaces`
 
 ## Self-test
-Why did `checkArea(t, 42, 72.0)` refuse to compile, and what does that prove about how interfaces work?
+- Why did `checkArea(t, 42, 72.0)` refuse to compile?::`42` is an `int`, which has no `Area()` method, so it doesn't satisfy the `Shape` interface parameter. #flashcards
+- What does that prove about how interfaces work?::Satisfaction is checked at compile time at every call site — a type is a `Shape` only if it has the required methods; the compiler, not the runtime, enforces it. #flashcards
