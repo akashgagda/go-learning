@@ -8,6 +8,7 @@ set -euo pipefail
 #   2. (re)writes ~/.config/obsidian/user-flags.conf (always overwrites)
 #   3. registers the vault and enables the CLI in ~/.config/obsidian/obsidian.json
 #   4. launches Obsidian and verifies the CLI + plugins
+#   5. installs the systemd backup timer (scripts/backup.sh every 30 min)
 #
 # Idempotent and safe to re-run. Run from anywhere.
 
@@ -23,20 +24,23 @@ PLUGIN_IDS=(templater-obsidian dataview obsidian-tasks-plugin obsidian-spaced-re
 
 DRY_RUN=0
 LAUNCH=1
+PULL=0
 
 usage() {
   cat <<EOF
-Usage: $(basename "$0") [--dry-run] [--no-launch]
+Usage: $(basename "$0") [--dry-run] [--no-launch] [--pull]
 
 Restores the Obsidian vault setup:
   1. restores notes/.obsidian/ from git if missing
   2. writes $CONFIG_DIR/user-flags.conf (overwrites)
   3. registers the vault and enables the CLI in obsidian.json
   4. launches Obsidian and verifies CLI + plugins
+  5. installs the systemd backup timer
 
 Options:
   --dry-run   report what would change, apply nothing
   --no-launch skip launching Obsidian and the CLI verification
+  --pull      git pull --ff-only before restoring (ignore if it fails)
 EOF
 }
 
@@ -44,6 +48,7 @@ for arg in "$@"; do
   case "$arg" in
     --dry-run) DRY_RUN=1 ;;
     --no-launch) LAUNCH=0 ;;
+    --pull) PULL=1 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown option: $arg" >&2; usage >&2; exit 2 ;;
   esac
@@ -54,6 +59,10 @@ say()  { printf '\033[1;32m  +\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m  !\033[0m %s\n' "$*" >&2; }
 
 # --- preflight ---------------------------------------------------------------
+if ! command -v git >/dev/null 2>&1; then
+  echo "error: 'git' not found in PATH" >&2
+  exit 1
+fi
 if ! command -v obsidian >/dev/null 2>&1; then
   echo "error: 'obsidian' not found in PATH" >&2
   echo "  install it first, e.g.  sudo pacman -S obsidian" >&2
@@ -63,7 +72,26 @@ if ! command -v python3 >/dev/null 2>&1; then
   echo "error: 'python3' not found in PATH" >&2
   exit 1
 fi
+if ! git -C "$REPO_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  echo "error: $REPO_ROOT is not a git repository" >&2
+  exit 1
+fi
+if ! git -C "$REPO_ROOT" ls-files notes/.obsidian | grep -q .; then
+  echo "error: notes/.obsidian is not tracked in $REPO_ROOT (nothing to restore)" >&2
+  exit 1
+fi
 [ "$DRY_RUN" -eq 1 ] && info "dry run: reporting what a restore would change"
+
+# --- 0. optional pull ----------------------------------------------------------
+if [ "$PULL" -eq 1 ]; then
+  if [ "$DRY_RUN" -eq 1 ]; then
+    info "would pull latest from origin"
+  elif git -C "$REPO_ROOT" pull --ff-only >/dev/null 2>&1; then
+    say "pulled latest from origin"
+  else
+    warn "could not pull (dirty tree or no remote); continuing with local state"
+  fi
+fi
 
 # --- 1. vault config from git -------------------------------------------------
 if [ -d "$VAULT_PATH/.obsidian" ]; then
@@ -169,4 +197,20 @@ if [ "${#missing[@]}" -eq 0 ]; then
   say "all ${#PLUGIN_IDS[@]} plugins listed in community-plugins.json"
 else
   warn "missing from community-plugins.json: ${missing[*]}"
+fi
+
+# --- 5. install backup timer ---------------------------------------------------
+if [ "$DRY_RUN" -eq 1 ]; then
+  info "would install go-learning backup timer (systemd user unit)"
+elif systemctl --user is-system-running >/dev/null 2>&1; then
+  info "installing go-learning backup timer"
+  mkdir -p ~/.config/systemd/user
+  sed "s|__REPO_ROOT__|$REPO_ROOT|g" "$SCRIPT_DIR/../systemd/go-learning-backup.service" \
+    > ~/.config/systemd/user/go-learning-backup.service
+  cp "$SCRIPT_DIR/../systemd/go-learning-backup.timer" ~/.config/systemd/user/
+  systemctl --user daemon-reload
+  systemctl --user enable --now go-learning-backup.timer
+  say "timer installed and enabled"
+else
+  warn "systemd user session unavailable; skipping timer install"
 fi
