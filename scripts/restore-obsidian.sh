@@ -8,7 +8,6 @@ set -euo pipefail
 #   2. (re)writes ~/.config/obsidian/user-flags.conf (always overwrites)
 #   3. registers the vault and enables the CLI in ~/.config/obsidian/obsidian.json
 #   4. launches Obsidian and verifies the CLI + plugins
-#   5. installs the systemd backup timer (scripts/backup.sh every 30 min)
 #
 # Idempotent and safe to re-run. Run from anywhere.
 
@@ -20,7 +19,7 @@ USER_FLAGS="$CONFIG_DIR/user-flags.conf"
 OBSIDIAN_JSON="$CONFIG_DIR/obsidian.json"
 CLI_SOCKET="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/.obsidian-cli.sock"
 
-PLUGIN_IDS=(templater-obsidian dataview obsidian-tasks-plugin obsidian-spaced-repetition obsidian-excalidraw-plugin obsidian-git code-styler obsidian-kanban quickadd)
+PLUGIN_IDS=(templater-obsidian dataview obsidian-tasks-plugin obsidian-spaced-repetition obsidian-excalidraw-plugin code-styler obsidian-kanban quickadd)
 
 DRY_RUN=0
 LAUNCH=1
@@ -35,7 +34,6 @@ Restores the Obsidian vault setup:
   2. writes $CONFIG_DIR/user-flags.conf (overwrites)
   3. registers the vault and enables the CLI in obsidian.json
   4. launches Obsidian and verifies CLI + plugins
-  5. installs the systemd backup timer
 
 Options:
   --dry-run   report what would change, apply nothing
@@ -197,20 +195,4 @@ if [ "${#missing[@]}" -eq 0 ]; then
   say "all ${#PLUGIN_IDS[@]} plugins listed in community-plugins.json"
 else
   warn "missing from community-plugins.json: ${missing[*]}"
-fi
-
-# --- 5. install backup timer ---------------------------------------------------
-if [ "$DRY_RUN" -eq 1 ]; then
-  info "would install go-learning backup timer (systemd user unit)"
-elif systemctl --user is-system-running >/dev/null 2>&1; then
-  info "installing go-learning backup timer"
-  mkdir -p ~/.config/systemd/user
-  sed "s|__REPO_ROOT__|$REPO_ROOT|g" "$SCRIPT_DIR/../systemd/go-learning-backup.service" \
-    > ~/.config/systemd/user/go-learning-backup.service
-  cp "$SCRIPT_DIR/../systemd/go-learning-backup.timer" ~/.config/systemd/user/
-  systemctl --user daemon-reload
-  systemctl --user enable --now go-learning-backup.timer
-  say "timer installed and enabled"
-else
-  warn "systemd user session unavailable; skipping timer install"
 fi

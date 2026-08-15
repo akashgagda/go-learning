@@ -1,6 +1,0 @@
-[Unit]
-Description=Backup go-learning repo (commit + push)
-
-[Service]
-Type=oneshot
-ExecStart=__REPO_ROOT__/scripts/backup.sh
