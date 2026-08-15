@@ -7,7 +7,7 @@ set -euo pipefail
 #   1. restores notes/.obsidian/ from git if it's missing locally
 #   2. (re)writes ~/.config/obsidian/user-flags.conf (always overwrites)
 #   3. registers the vault and enables the CLI in ~/.config/obsidian/obsidian.json
-#   4. launches Obsidian and verifies the CLI + plugins
+#   4. launches Obsidian, verifies the CLI + plugins, and trusts the vault
 #
 # Idempotent and safe to re-run. Run from anywhere.
 
@@ -24,21 +24,23 @@ PLUGIN_IDS=(templater-obsidian dataview obsidian-tasks-plugin obsidian-spaced-re
 DRY_RUN=0
 LAUNCH=1
 PULL=0
+TRUST=1
 
 usage() {
   cat <<EOF
-Usage: $(basename "$0") [--dry-run] [--no-launch] [--pull]
+Usage: $(basename "$0") [--dry-run] [--no-launch] [--pull] [--no-trust]
 
 Restores the Obsidian vault setup:
   1. restores notes/.obsidian/ from git if missing
   2. writes $CONFIG_DIR/user-flags.conf (overwrites)
   3. registers the vault and enables the CLI in obsidian.json
-  4. launches Obsidian and verifies CLI + plugins
+  4. launches Obsidian, verifies CLI + plugins, and trusts the vault
 
 Options:
   --dry-run   report what would change, apply nothing
   --no-launch skip launching Obsidian and the CLI verification
   --pull      git pull --ff-only before restoring (ignore if it fails)
+  --no-trust  do not disable restricted mode / trust the vault
 EOF
 }
 
@@ -47,6 +49,7 @@ for arg in "$@"; do
     --dry-run) DRY_RUN=1 ;;
     --no-launch) LAUNCH=0 ;;
     --pull) PULL=1 ;;
+    --no-trust) TRUST=0 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown option: $arg" >&2; usage >&2; exit 2 ;;
   esac
@@ -180,8 +183,35 @@ if [ "$LAUNCH" -eq 1 ] && [ "$DRY_RUN" -eq 0 ]; then
     else
       warn "CLI socket up but 'obsidian version' failed"
     fi
+    if [ "$TRUST" -eq 1 ]; then
+      restrict_state="$(obsidian plugins:restrict 2>/dev/null | grep -vi 'loaded\|checking\|latest\|app is up\|success' | tr -d '[:space:]')"
+      case "$restrict_state" in
+        off)
+          say "restricted mode off (vault already trusted)"
+          ;;
+        on)
+          info "vault not trusted — disabling restricted mode"
+          if obsidian plugins:restrict off >/dev/null 2>&1; then
+            say "restricted mode off; plugins will load (app reloads)"
+          else
+            warn "could not disable restricted mode — enable plugins manually in Settings → Community plugins"
+          fi
+          ;;
+        *)
+          warn "could not read restricted mode (got: '$restrict_state'); check Settings → Community plugins"
+          ;;
+      esac
+    fi
   else
     warn "CLI socket not ready after 30s"
+  fi
+fi
+
+if [ "$DRY_RUN" -eq 1 ] && [ "$LAUNCH" -eq 1 ]; then
+  if [ "$TRUST" -eq 1 ]; then
+    info "would trust the vault (disable restricted mode) if needed"
+  else
+    info "would skip trusting the vault (--no-trust)"
   fi
 fi
 
