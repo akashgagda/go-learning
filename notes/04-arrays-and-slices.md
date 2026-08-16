@@ -14,7 +14,7 @@ tags: [go, chapter]
 - `append(slice, item)` grows a slice and returns the new slice — always assign its result.
 - `numbers[1:]` slices from index 1 to the end (the "tail").
 - `len(slice)` gives the length — check it before slicing to avoid panics.
-- Compare slices in tests with `slices.Equal(got, want)`, not `==` (works only on arrays).
+- Compare slices in tests with `slices.Equal(got, want)`, not == (works only on arrays).
 - TDD pattern: build each function on the previous one (`Sum` -> `SumAll` -> `SumAllTails`), testing each.
 
 ## Key snippet
