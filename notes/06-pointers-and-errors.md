@@ -48,11 +48,13 @@ func (w *Wallet) Withdraw(amount Bitcoin) error {
 
 ## Self-test
 - Why did `Deposit` with a value receiver leave the balance at 0 even though the code looked right?::Go copies values on method calls, so `Deposit` mutated a copy of the wallet. A `*Wallet` pointer receiver mutates the original. #flashcards
-- What does `var ErrInsufficientFunds` buy you compared with comparing error message strings?::One source of truth shared by test and code — messages can't drift or get typo'd independently, and callers can compare errors directly with ==. #flashcards
+- What does `var ErrInsufficientFunds` buy you compared with comparing error message strings?::One source of truth shared by test and code — messages can't drift or get typo'd independently, and callers can compare errors directly with == . #flashcards
+<!--SR:!2026-08-16,0,230-->
 - When do you need `t.Fatal` instead of `t.Errorf` in a helper?::When continuing the test would dereference a nil value (e.g. `got.Error()` on a nil error) — `t.Fatal` stops the test immediately. #flashcards
 - How do you make a domain value print as "10 BTC" instead of "10"?::Implement `String() string` on the type; `fmt` uses it for the `%s` verb. #flashcards
 - What's the difference between a pointer receiver and a pointer parameter?::Both pass addresses; the method-call syntax writes the `&` for the receiver automatically, but a pointer parameter requires you to write `&` explicitly at the call site. #flashcards
 - How can all tests pass while a `Transfer` feature is broken?::If the tests only assert the sender's balance, the friend's side is a blind spot — a transfer has two effects and both must be asserted. #flashcards
+<!--SR:!2026-08-16,0,230-->
 
 ## Bonus: error wrapping
 - Layers want to add context without losing the cause: `return fmt.Errorf("processing withdrawal for account %s: %w", accountID, err)`.

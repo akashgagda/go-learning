@@ -2,7 +2,7 @@ package main
 
 import "errors"
 
-var ErrInsufficientBalance = errors.New("No Balance")
+var ErrInsufficientBalance = errors.New("no balance")
 
 type BankAccount struct {
 	balance Bitcoin
