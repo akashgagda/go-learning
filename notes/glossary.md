@@ -5,7 +5,7 @@ date: 2026-08-15
 tags: [go, glossary]
 ---
 
-# Go Vocabulary (chapters 1-6)
+# Go Vocabulary (chapters 1-8)
 
 All terms in Go-only terms, with examples from the course code.
 
@@ -40,6 +40,13 @@ All terms in Go-only terms, with examples from the course code.
 | **`Stringer`**             | The `fmt` interface `String() string`; implemented types print through it for `%s`.                                                                                                                     | `func (b Bitcoin) String() string` → `"10 BTC"`                          |
 | **`t.Fatal`**              | Stops the test immediately — used before touching something that may be nil.                                                                                                                            | `t.Fatal("didn't get an error but wanted one")`                          |
 | **If-with-initializer**    | Declare a value and check it in one line; the variable is scoped to the block.                                                                                                                          | `if err := wallet.Withdraw(amount); err != nil`                          |
+| **Map**                    | A built-in key-value store; keys must be comparable (hashed and `==`-compared), values are unrestricted payloads.                                                                                       | `type Dictionary map[string]string`                                      |
+| **Two-value lookup**       | `v, ok := m[k]` returns the value and a bool `ok` saying whether the key existed — the only reliable existence check.                                                                                   | `v, ok := d["word"]`                                                     |
+| **Comma-ok**               | The `, ok` second return from a map lookup (and type assertions); breaks the ambiguity between "missing" and "stored zero value".                                                                       | `if _, ok := d[word]; !ok { ... }`                                       |
+| **nil map**                | A declared-but-uninitialized map; reads are safe (acts empty) but writes panic: "assignment to entry in nil map".                                                                                       | `var d map[string]string` then `d["x"] = "y"` → panic                   |
+| **Sentinel error value**   | A shared, named package-level error used as one source of truth; compare by identity (`==`) or `errors.Is`.                                                                                            | `var ErrNotFound = errors.New("not found")`                              |
+| **`make`**                 | Built-in that allocates and initializes a map (or slice/channel) so it is ready to use — avoids the nil-map panic.                                                                                      | `d := make(map[string]string)`                                           |
+| **delete**                 | Built-in map deletion; `delete(m, key)` is a no-op if the key is missing.                                                                                                                              | `delete(d, word)`                                                        |
 
 ## Official references (pkg.go.dev)
 - `testing.TB` — the interface common to `*testing.T`, `*testing.B`, and `*testing.F`; `Helper()` marks a helper so failure lines point at the caller. https://pkg.go.dev/testing#TB
@@ -48,6 +55,9 @@ All terms in Go-only terms, with examples from the course code.
 - `errors.Is` — the safe way to check an error that may have been wrapped. https://pkg.go.dev/errors#Is
 - `fmt.Errorf` with the `%w` verb — add context while keeping the error chain. https://pkg.go.dev/fmt#Errorf
 - `fmt.Stringer` — the interface behind `%s` printing. https://pkg.go.dev/fmt#Stringer
+- `map` — the built-in key-value type; keys must be comparable. https://pkg.go.dev/builtin#map
+- `make` — allocate and initialize a map/slice/channel so it's ready to use. https://pkg.go.dev/builtin#make
+- `delete` — remove a key from a map (no-op if absent). https://pkg.go.dev/builtin#delete
 
 ## Mental anchors
 - What is the difference between a receiver and a parameter?::A receiver is which type owns the behavior (`c Circle`); a parameter is what extra input the behavior needs. That's the whole difference between a method and a function. #flashcards
@@ -58,3 +68,5 @@ All terms in Go-only terms, with examples from the course code.
 - What is the difference between `%v` and `%w` in `fmt.Errorf`?::Both substitute the message text, but `%w` also keeps a link to the original error so `errors.Is` can find it through the chain. #flashcards
 - What is a sentinel error for?::A package-level error value as a single source of truth — test and code compare the same value instead of matching strings that can drift. #flashcards
 - What is the difference between a pointer receiver and a pointer parameter?::Same idea — an address to work on the original — but the receiver's `&` is written by the method-call syntax, while a pointer parameter's `&` must be written by hand at the call site. #flashcards
+- Why does Go return the zero value for a missing map key instead of an error?::A lookup can't signal absence through the value, so it returns a well-defined default (safe for `m[k]++` on first touch); comma-ok exists to tell "missing" apart from "stored zero value". #flashcards
+- How do you tell whether a key exists in a map?::Use the two-value form `v, ok := m[k]` and check `ok`; never infer existence by sniffing the value, since a stored zero value looks identical to missing. #flashcards

@@ -15,13 +15,13 @@ kanban-plugin: board
 
 ## ✅ Done
 
-- [ ] 01 - Hello, World
-- [ ] 02 - Integers
-- [ ] 03 - Iteration
-- [ ] 04 - Arrays and Slices
-- [ ] 05 - Structs, Methods & Interfaces
-- [ ] 06 - Pointers and Errors
-- [ ] 07 - Maps
+- [x] 01 - Hello, World
+- [x] 02 - Integers
+- [x] 03 - Iteration
+- [x] 04 - Arrays and Slices
+- [x] 05 - Structs, Methods & Interfaces
+- [x] 06 - Pointers and Errors
+- [x] 07 - Maps
 
 
 
