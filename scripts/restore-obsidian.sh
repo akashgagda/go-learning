@@ -193,6 +193,16 @@ PY
   elif [ -n "$theme" ]; then
     say "theme '$theme' present"
   fi
+  # Notes sanity: Dataview treats any inline code span starting with '=' as an
+  # inline query and renders PARSING FAILED when it can't parse the rest —
+  # flag the pattern so the notes stay render-clean.
+  if offenders="$(grep -rn --include='*.md' '`=' "$VAULT_PATH" 2>/dev/null | grep -v '/\.obsidian/' || true)" && [ -n "$offenders" ]; then
+    warn "code spans starting with '=' (Dataview inline-query trap):"
+    printf '%s\n' "$offenders" | sed 's/^/      /'
+    problems=1
+  else
+    say "no '='-prefixed code spans in notes"
+  fi
   if [ "$problems" -eq 0 ]; then
     say "all checks passed"
   else
