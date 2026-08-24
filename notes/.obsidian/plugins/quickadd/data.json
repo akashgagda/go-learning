@@ -14,7 +14,8 @@
       },
       "prepend": false,
       "insertAfter": {
-        "enabled": false
+        "enabled": true,
+        "after": "| Term"
       },
       "newLineCapture": {
         "enabled": true,
