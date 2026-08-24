@@ -1,12 +1,14 @@
 ---
-chapter: 06
+chapter: "06"
 title: Pointers and Errors
-status: done
+status: complete
 date: 2026-08-16
 tags: [go, chapter]
 ---
 
 # Pointers and Errors
+
+> Status: ✅ COMPLETE — pointers, error values, sentinels, and the wallet/transfer exercises.
 
 ## Concepts learned
 - Go **copies values** when calling functions/methods. A value receiver (`func (w Wallet)`) mutates a private copy; a **pointer receiver** (`func (w *Wallet)`) gets the address and mutates the original. Keep receiver types consistent.
@@ -64,3 +66,6 @@ func (w *Wallet) Withdraw(amount Bitcoin) error {
 - `err` is just the conventional variable name for the error report: `nil` = "all good", non-nil = "something failed".
 - Sibling: `errors.As` extracts typed errors from a chain (covered in the error-types chapter).
 - Why does `errors.Is(err, ErrInsufficientFunds)` return false when the error was built with `%v` instead of `%w`?::`%v` copies the message into a brand-new, unrelated error value — the chain is broken and there's nothing to unwrap. `%w` keeps a link to the original error, so `errors.Is` can walk the chain and find the match. #flashcards
+
+---
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]

@@ -33,3 +33,6 @@ tags: [go, chapter]
 ## Self-test
 <!-- One card per idea. Format: Question::Answer  #flashcards -->
 - What is the key idea from this chapter?::Answer in your own words #flashcards
+
+---
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]

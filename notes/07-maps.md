@@ -85,3 +85,6 @@ go test ./07-maps → ok (TestSearch, TestAdd, TestUpdate, TestDelete — all 8 
 - Can you reassign a map through a value receiver?::No — d = Dictionary{} only changes the local copy's pointer; the caller's map is untouched. You can mutate inside the map, but not point it at a new map #flashcards
 - Why does Go return the zero value for a missing map key instead of panicking?::A lookup can't signal absence through the value itself, so Go chose a well-defined default — safe for patterns like m[key]++ on first touch; the ambiguity is then resolved by comma-ok #flashcards
 - What happens when you write to a nil map, and why?::Runtime panic "assignment to entry in nil map" — a nil map has no allocated hmap table to store the entry. Reads are safe (no table ≡ empty). Initialize with Dictionary{} or make() #flashcards
+
+---
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]

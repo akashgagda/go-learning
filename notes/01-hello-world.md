@@ -1,12 +1,14 @@
 ---
-chapter: 01
+chapter: "01"
 title: Hello, World
-status: done
+status: complete
 date: 2026-08-15
 tags: [go, chapter]
 ---
 
 # Hello, World
+
+> Status: ✅ COMPLETE — first program, testing basics, subtests, and the TDD loop.
 
 ## Concepts learned
 - `t.Run("name", func(t *testing.T) {...})` — subtests group scenarios; failing ones show as `TestHello/in_Spanish` in output.
@@ -45,3 +47,6 @@ func greetingPrefix(language string) (prefix string) {
 ## Self-test
 - Why does `assertCorrectMessage` accept `testing.TB` instead of `*testing.T`?::Because `testing.TB` is an interface implemented by both `*testing.T` and `*testing.B`, so one helper works for tests and benchmarks. #flashcards
 - What does `t.Helper()` change about failure output?::It marks the function as a helper so failures report the call-site line, not the line inside the helper. #flashcards
+
+---
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]

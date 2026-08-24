@@ -1,12 +1,14 @@
 ---
-chapter: 02
+chapter: "02"
 title: Integers
-status: done
+status: complete
 date: 2026-08-15
 tags: [go, chapter]
 ---
 
 # Integers
+
+> Status: ✅ COMPLETE — integers, table-driven tests, and testable examples.
 
 ## Concepts learned
 - Non-`main` package: `package integers` — one package per directory, so each chapter gets its own folder.
@@ -35,3 +37,6 @@ func ExampleAdd() {
 ## Self-test
 - What makes an example function "testable"?::With an `// Output:` comment the test harness runs it and asserts the printed output; without it, the example is only compiled, never run. #flashcards
 - What changes if you remove the `// Output: 6` comment from `ExampleAdd`?::The example still compiles but is never executed, so it can rot silently without failing the suite. #flashcards
+
+---
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]

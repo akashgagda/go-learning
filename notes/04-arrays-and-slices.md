@@ -1,12 +1,14 @@
 ---
-chapter: 04
+chapter: "04"
 title: Arrays and Slices
-status: done
+status: complete
 date: 2026-08-15
 tags: [go, chapter]
 ---
 
 # Arrays and Slices
+
+> Status: ✅ COMPLETE — slices, variadic parameters, and the accumulator pattern.
 
 ## Concepts learned
 - Slices (`[]int`) are dynamic-length; arrays (`[5]int`) are fixed and rarely used directly.
@@ -44,3 +46,6 @@ func SumAllTails(numbersToSum ...[]int) []int {
 ## Self-test
 - What does `SumAllTails([]int{}, []int{3, 4, 5})` return?::`[0, 9]` — the empty slice contributes 0, and `Sum([4, 5])` contributes 9. #flashcards
 - Why doesn't the empty slice panic in `SumAllTails`?::`len(numbers) == 0` is checked first, so `numbers[1:]` never runs on an empty slice — that would panic with `slice bounds out of range [1:0]`. #flashcards
+
+---
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]

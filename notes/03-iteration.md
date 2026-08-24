@@ -1,12 +1,14 @@
 ---
-chapter: 03
+chapter: "03"
 title: Iteration
-status: done
+status: complete
 date: 2026-08-15
 tags: [go, chapter]
 ---
 
 # Iteration
+
+> Status: ✅ COMPLETE — loops, benchmarks, and the strings.Builder optimization.
 
 ## Concepts learned
 - `for i := 0; i < n; i++` — Go's only loop keyword (no `while`/`do`); no parens around the three parts, braces required.
@@ -37,3 +39,6 @@ func Repeat(character string) string {
 ## Self-test
 - Why does `repeated += character` cause 4 heap allocations per call?::Strings are immutable, so `+=` copies the entire accumulated string on every iteration. #flashcards
 - How does `strings.Builder` avoid those allocations?::It writes into a growable buffer and returns a single string at the end via `.String()`, so it never copies the accumulated value per append. #flashcards
+
+---
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]
