@@ -27,6 +27,15 @@ WHERE status = "in-progress"
 SORT date ASC
 ```
 
+## Next up
+
+```dataview
+TABLE date AS Created
+FROM #chapter
+WHERE status = "todo"
+SORT file.name ASC
+```
+
 ## Open tasks
 
 ```tasks

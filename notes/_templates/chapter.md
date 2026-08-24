@@ -11,7 +11,7 @@ date: "<% tp.date.now('YYYY-MM-DD') %>"
 <!-- Name this file like the chapter folder (e.g. 09-mocking.md) so the test
      command below resolves to the right folder. Fill the sections as you go. -->
 
-> Status: 🔄 IN PROGRESS — work through the TDD checklist below.
+> Status: ⏳ TODO — not started yet. Work through the TDD checklist below.
 
 ## Concepts learned
 - 
