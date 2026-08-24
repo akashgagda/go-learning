@@ -26,9 +26,13 @@ book *Learn Go With Tests* (LGWT) — the only curriculum.
   (remote server `learn-go-with-tests` in opencode.json). Fallbacks:
   https://github.com/quii/learn-go-with-tests and the offline copy
   `learn-go-with-tests.pdf` in the workspace root.
-- `notes/` is an Obsidian vault: `chapter.md` in `_templates/` is the note template;
-  chapter notes carry frontmatter (`status: todo|in-progress|complete`,
-  `tags: [go, chapter]`).
+- `notes/` is an Obsidian vault: `chapter.md` in `_templates/` is the note template
+  (Templater syntax); chapter notes carry frontmatter
+  (`status: todo|in-progress|complete`, `tags: [go, chapter]`). `dashboard.md` is
+  the vault home.
+- Vault tooling: recreate the vault setup on a fresh machine with
+  `./scripts/restore-obsidian.sh` (`--check` verifies without changing anything,
+  `--backup` commits the current vault state to git).
 
 ## Commands
 
@@ -38,3 +42,4 @@ book *Learn Go With Tests* (LGWT) — the only curriculum.
 | One chapter | `go test ./<nn>-<name>/...` |
 | Format code | `gofmt -w .` |
 | Vet | `go vet ./...` |
+| Restore Obsidian vault | `./scripts/restore-obsidian.sh` (`--check` to verify, `--backup` to commit state) |

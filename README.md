@@ -26,3 +26,21 @@ go test ./01-hello-world/...
 - `06-pointers-and-errors` - pointers, error handling
 - `07-maps` - maps, sentinel errors, subtests
 - `08-dependency-injection` - dependency injection (current)
+
+## Notes (Obsidian)
+
+`notes/` is an Obsidian vault: `dashboard.md` (progress), `learning-board.md`
+(kanban board), `glossary.md` (vocabulary + flashcards), and one note per chapter.
+
+Recreate the vault setup (config, plugins, registration) on a new machine:
+
+```bash
+./scripts/restore-obsidian.sh
+```
+
+Verify without touching anything, or commit the current vault state:
+
+```bash
+./scripts/restore-obsidian.sh --check
+./scripts/restore-obsidian.sh --backup
+```

@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# restore-obsidian.sh — re-materialize the Obsidian vault setup.
+# restore-obsidian.sh — re-materialize, verify, and back up the Obsidian vault.
 #
-# Restores everything that a fresh `git clone` does NOT bring back:
-#   1. restores notes/.obsidian/ from git if it's missing locally
+# A fresh `git clone` does NOT bring back the vault setup, so this restores:
+#   1. notes/.obsidian/ from git if it's missing (or always, with --force)
 #   2. (re)writes ~/.config/obsidian/user-flags.conf (always overwrites)
 #   3. registers the vault and enables the CLI in ~/.config/obsidian/obsidian.json
 #   4. launches Obsidian, verifies the CLI + plugins, and trusts the vault
+#
+# Also supports:
+#   --check   verify vault config, registration, CLI flag, and plugin installs;
+#             touches nothing
+#   --backup  commit the current vault state (notes/) to git; touches nothing else
 #
 # Idempotent and safe to re-run. Run from anywhere.
 
@@ -19,19 +24,20 @@ USER_FLAGS="$CONFIG_DIR/user-flags.conf"
 OBSIDIAN_JSON="$CONFIG_DIR/obsidian.json"
 CLI_SOCKET="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/.obsidian-cli.sock"
 
-PLUGIN_IDS=(templater-obsidian dataview obsidian-tasks-plugin obsidian-spaced-repetition obsidian-excalidraw-plugin code-styler obsidian-kanban quickadd)
-
 DRY_RUN=0
 LAUNCH=1
 PULL=0
 TRUST=1
+FORCE=0
+CHECK=0
+BACKUP=0
 
 usage() {
   cat <<EOF
-Usage: $(basename "$0") [--dry-run] [--no-launch] [--pull] [--no-trust]
+Usage: $(basename "$0") [--dry-run] [--no-launch] [--pull] [--no-trust] [--force] [--check] [--backup]
 
 Restores the Obsidian vault setup:
-  1. restores notes/.obsidian/ from git if missing
+  1. restores notes/.obsidian/ from git if missing (or always, with --force)
   2. writes $CONFIG_DIR/user-flags.conf (overwrites)
   3. registers the vault and enables the CLI in obsidian.json
   4. launches Obsidian, verifies CLI + plugins, and trusts the vault
@@ -41,6 +47,9 @@ Options:
   --no-launch skip launching Obsidian and the CLI verification
   --pull      git pull --ff-only before restoring (ignore if it fails)
   --no-trust  do not disable restricted mode / trust the vault
+  --force     restore notes/.obsidian from git even if it already exists
+  --check     verify vault config, registration, CLI, and plugin installs; change nothing
+  --backup    commit the current vault state (notes/) to git; change nothing else
 EOF
 }
 
@@ -50,28 +59,136 @@ for arg in "$@"; do
     --no-launch) LAUNCH=0 ;;
     --pull) PULL=1 ;;
     --no-trust) TRUST=0 ;;
+    --force) FORCE=1 ;;
+    --check) CHECK=1 ;;
+    --backup) BACKUP=1 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown option: $arg" >&2; usage >&2; exit 2 ;;
   esac
 done
 
+if [ "$CHECK" -eq 1 ] && [ "$BACKUP" -eq 1 ]; then
+  echo "error: --check and --backup are mutually exclusive" >&2
+  exit 2
+fi
+
 info() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 say()  { printf '\033[1;32m  +\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m  !\033[0m %s\n' "$*" >&2; }
+
+# plugin_problems: print (space-separated) plugin ids listed in
+# community-plugins.json whose install dir lacks manifest.json or main.js.
+# community-plugins.json is the single source of truth for what to check.
+plugin_problems() {
+  python3 - "$VAULT_PATH" <<'PY'
+import json, os, sys
+base = os.path.join(sys.argv[1], ".obsidian")
+with open(os.path.join(base, "community-plugins.json")) as f:
+    ids = json.load(f)
+missing = [pid for pid in ids
+           if not (os.path.isfile(os.path.join(base, "plugins", pid, "manifest.json"))
+                   and os.path.isfile(os.path.join(base, "plugins", pid, "main.js")))]
+if missing:
+    print(" ".join(missing))
+PY
+}
+
+# check_vault: verify config presence, obsidian binary, vault registration + CLI
+# flag in obsidian.json, and plugin installs. Touches nothing. Exits non-zero on
+# any problem, so it can be used in scripts/CI.
+check_vault() {
+  local problems=0
+  info "checking Obsidian vault setup (no changes made)"
+  if [ -d "$VAULT_PATH/.obsidian" ]; then
+    say "vault config present at notes/.obsidian"
+  else
+    warn "notes/.obsidian is missing — run the script without --check to restore it"
+    problems=1
+  fi
+  if command -v obsidian >/dev/null 2>&1; then
+    say "'obsidian' found in PATH"
+  else
+    warn "'obsidian' not found in PATH"
+    problems=1
+  fi
+  if python3 - "$VAULT_PATH" "$OBSIDIAN_JSON" <<'PY'
+import json, os, sys
+vault_path = os.path.realpath(sys.argv[1])
+try:
+    with open(sys.argv[2]) as f:
+        data = json.load(f)
+except (OSError, json.JSONDecodeError):
+    data = {}
+vaults = data.get("vaults", {})
+registered = any(os.path.realpath(v.get("path", "")) == vault_path for v in vaults.values())
+cli_on = bool(data.get("cli"))
+if not os.path.exists(sys.argv[2]):
+    print("  ! obsidian.json not found at %s" % sys.argv[2])
+if not registered:
+    print("  ! vault not registered in obsidian.json")
+if not cli_on:
+    print("  ! Obsidian CLI not enabled (obsidian.json 'cli' flag)")
+sys.exit(0 if (registered and cli_on) else 1)
+PY
+  then
+    say "vault registered and CLI enabled in obsidian.json"
+  else
+    problems=1
+  fi
+  if [ -f "$VAULT_PATH/.obsidian/community-plugins.json" ]; then
+    mapfile -t missing < <(plugin_problems)
+    if [ "${#missing[@]}" -eq 0 ]; then
+      say "all plugins in community-plugins.json are installed"
+    else
+      warn "plugins listed but not installed: ${missing[*]}"
+      problems=1
+    fi
+  else
+    warn "community-plugins.json missing"
+    problems=1
+  fi
+  if [ "$problems" -eq 0 ]; then
+    say "all checks passed"
+  else
+    warn "problems found (see above); fix and re-run"
+  fi
+  return "$problems"
+}
+
+# backup_vault: stage notes/ (respecting .gitignore) and commit as a manual
+# backup snapshot — the repo's "fully manual" sync model.
+backup_vault() {
+  info "backing up vault state to git"
+  if [ "$DRY_RUN" -eq 1 ]; then
+    info "would stage notes/ and commit 'Backup Obsidian vault <timestamp>'"
+    return 0
+  fi
+  git -C "$REPO_ROOT" add notes
+  if git -C "$REPO_ROOT" diff --cached --quiet; then
+    say "nothing to commit — vault state matches HEAD"
+  else
+    git -C "$REPO_ROOT" commit -m "Backup Obsidian vault $(date +%Y-%m-%d\ %H:%M)" >/dev/null
+    say "committed vault state"
+  fi
+}
 
 # --- preflight ---------------------------------------------------------------
 if ! command -v git >/dev/null 2>&1; then
   echo "error: 'git' not found in PATH" >&2
   exit 1
 fi
-if ! command -v obsidian >/dev/null 2>&1; then
-  echo "error: 'obsidian' not found in PATH" >&2
-  echo "  install it first, e.g.  sudo pacman -S obsidian" >&2
-  exit 1
-fi
 if ! command -v python3 >/dev/null 2>&1; then
   echo "error: 'python3' not found in PATH" >&2
   exit 1
+fi
+if ! command -v obsidian >/dev/null 2>&1; then
+  if [ "$CHECK" -eq 1 ] || [ "$BACKUP" -eq 1 ]; then
+    warn "'obsidian' not found in PATH (not needed for this mode)"
+  else
+    echo "error: 'obsidian' not found in PATH" >&2
+    echo "  install it first, e.g.  sudo pacman -S obsidian" >&2
+    exit 1
+  fi
 fi
 if ! git -C "$REPO_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   echo "error: $REPO_ROOT is not a git repository" >&2
@@ -82,6 +199,17 @@ if ! git -C "$REPO_ROOT" ls-files notes/.obsidian | grep -q .; then
   exit 1
 fi
 [ "$DRY_RUN" -eq 1 ] && info "dry run: reporting what a restore would change"
+
+# --- check / backup modes -----------------------------------------------------
+if [ "$CHECK" -eq 1 ]; then
+  check_vault
+  exit "$?"
+fi
+
+if [ "$BACKUP" -eq 1 ]; then
+  backup_vault
+  exit 0
+fi
 
 # --- 0. optional pull ----------------------------------------------------------
 if [ "$PULL" -eq 1 ]; then
@@ -95,7 +223,7 @@ if [ "$PULL" -eq 1 ]; then
 fi
 
 # --- 1. vault config from git -------------------------------------------------
-if [ -d "$VAULT_PATH/.obsidian" ]; then
+if [ -d "$VAULT_PATH/.obsidian" ] && [ "$FORCE" -eq 0 ]; then
   say "vault config present at notes/.obsidian (nothing to restore)"
 else
   if [ "$DRY_RUN" -eq 1 ]; then
@@ -103,7 +231,7 @@ else
   else
     info "restoring notes/.obsidian from git"
     (cd "$REPO_ROOT" && git restore --source=HEAD --worktree -- notes/.obsidian)
-    say "restored"
+    say "restored (ignored files like workspace.json are left untouched)"
   fi
 fi
 
@@ -173,18 +301,31 @@ PY
 if [ "$LAUNCH" -eq 1 ] && [ "$DRY_RUN" -eq 0 ]; then
   info "launching Obsidian"
   setsid obsidian >/dev/null 2>&1 &
+  OBS_PID=$!
+  socket_ready=0
   for _ in $(seq 1 30); do
-    [ -S "$CLI_SOCKET" ] && break
+    if [ -S "$CLI_SOCKET" ]; then
+      socket_ready=1
+      break
+    fi
+    if ! kill -0 "$OBS_PID" 2>/dev/null; then
+      warn "Obsidian process exited before the CLI socket appeared"
+      break
+    fi
     sleep 1
   done
-  if [ -S "$CLI_SOCKET" ]; then
+  if [ "$socket_ready" -eq 1 ]; then
     if version="$(obsidian version 2>/dev/null)"; then
       say "CLI works: $version"
     else
       warn "CLI socket up but 'obsidian version' failed"
     fi
     if [ "$TRUST" -eq 1 ]; then
-      restrict_state="$(obsidian plugins:restrict 2>/dev/null | grep -vi 'loaded\|checking\|latest\|app is up\|success' | tr -d '[:space:]')"
+      # Strip ANSI colour codes, then extract the last bare on/off word.
+      restrict_state="$(obsidian plugins:restrict 2>/dev/null \
+        | sed 's/\x1b\[[0-9;]*m//g' \
+        | grep -oiE '\b(on|off)\b' \
+        | tail -n1 || true)"
       case "$restrict_state" in
         off)
           say "restricted mode off (vault already trusted)"
@@ -215,14 +356,13 @@ if [ "$DRY_RUN" -eq 1 ] && [ "$LAUNCH" -eq 1 ]; then
   fi
 fi
 
+# --- plugins: verify every listed plugin is actually installed -----------------
 missing=()
-for p in "${PLUGIN_IDS[@]}"; do
-  if ! grep -q "\"$p\"" "$VAULT_PATH/.obsidian/community-plugins.json" 2>/dev/null; then
-    missing+=("$p")
-  fi
-done
+if [ -f "$VAULT_PATH/.obsidian/community-plugins.json" ]; then
+  mapfile -t missing < <(plugin_problems)
+fi
 if [ "${#missing[@]}" -eq 0 ]; then
-  say "all ${#PLUGIN_IDS[@]} plugins listed in community-plugins.json"
+  say "all plugins in community-plugins.json are installed"
 else
-  warn "missing from community-plugins.json: ${missing[*]}"
+  warn "plugins listed but not installed: ${missing[*]}"
 fi
