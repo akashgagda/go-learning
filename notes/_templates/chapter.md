@@ -1,11 +1,17 @@
 ---
-chapter: "{{title}}"
+chapter: "<% tp.file.title.split("-")[0] %>"
+title: <% tp.file.title.replace(/^\d+-/, "").replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()) %>
 status: todo
 tags: [go, chapter]
-date: "{{date:YYYY-MM-DD}}"
+date: "<% tp.date.now('YYYY-MM-DD') %>"
 ---
 
-# {{title}}
+# <% tp.file.title.replace(/^\d+-/, "").replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()) %>
+
+<!-- Name this file like the chapter folder (e.g. 09-mocking.md) so the test
+     command below resolves to the right folder. Fill the sections as you go. -->
+
+> Status: 🔄 IN PROGRESS — work through the TDD checklist below.
 
 ## Concepts learned
 - 
@@ -25,7 +31,7 @@ date: "{{date:YYYY-MM-DD}}"
 - [ ] #task Update this note with what you learned
 
 ## Tests
-`go test ./{{title}}/...` → 
+`go test ./<% tp.file.title %>/...` → 
 
 ## Self-test
 <!-- One card per idea. Format: Question::Answer  #flashcards -->

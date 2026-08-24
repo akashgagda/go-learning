@@ -1,21 +1,39 @@
 # Learning Dashboard
 
-> Progress tracker for Learn Go with Tests.
+> Progress tracker for [Learn Go with Tests](https://quii.gitbook.io/learn-go-with-tests/).
 
-## Chapter progress
+## Progress at a glance
 
 ```dataview
-TABLE status AS Status, date AS Completed, file.link AS Note
+TABLE length(rows) AS Chapters
+FROM #chapter
+GROUP BY status
+```
+
+## Chapters
+
+```dataview
+TABLE status AS Status, date AS Started, file.link AS Note
 FROM #chapter
 SORT file.name ASC
 ```
 
-## Open TDD tasks
+## Currently learning
+
+```dataview
+TABLE date AS Started
+FROM #chapter
+WHERE status = "in-progress"
+SORT date ASC
+```
+
+## Open tasks
 
 ```tasks
 not done
 ```
 
-## Glossary
+## Links
 
-- [[glossary]]
+- [[learning-board|📋 Learning board (kanban)]]
+- [[glossary|📖 Go vocabulary]]
