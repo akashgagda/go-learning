@@ -33,9 +33,7 @@
       "#review"
     ],
     "noteTagsToIgnore": [],
-    "noteFoldersToIgnore": [
-      "**/*.excalidraw.md"
-    ],
+    "noteFoldersToIgnore": [],
     "openRandomNote": false,
     "autoNextNote": false,
     "showFileMenuReviewOptions": true,
