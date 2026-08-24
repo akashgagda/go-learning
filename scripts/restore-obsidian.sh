@@ -51,8 +51,9 @@ Options:
   --pull      git pull --ff-only before restoring (ignore if it fails)
   --no-trust  do not disable restricted mode / trust the vault
   --force     restore notes/.obsidian from git even if it already exists
-  --check     verify vault config, registration, CLI, and plugin installs; change nothing
-  --backup    commit the current vault state (notes/) to git; change nothing else
+  --check     verify config, registration, CLI, plugins, and theme; exits non-zero
+              on any problem (mutually exclusive with --backup)
+  --backup    commit the current vault state (notes/) to git (mutually exclusive with --check)
 EOF
 }
 
@@ -93,6 +94,23 @@ missing = [pid for pid in ids
                    and os.path.isfile(os.path.join(base, "plugins", pid, "main.js")))]
 if missing:
     print(" ".join(missing))
+PY
+}
+
+# orphaned_plugins: print (space-separated) plugin folder names in
+# .obsidian/plugins that are NOT listed in community-plugins.json — leftovers
+# from partial uninstalls that are loaded by nothing.
+orphaned_plugins() {
+  python3 - "$VAULT_PATH" <<'PY'
+import json, os, sys
+base = os.path.join(sys.argv[1], ".obsidian")
+with open(os.path.join(base, "community-plugins.json")) as f:
+    listed = set(json.load(f))
+plugins_dir = os.path.join(base, "plugins")
+orphans = sorted(d for d in os.listdir(plugins_dir)
+                 if os.path.isdir(os.path.join(plugins_dir, d)) and d not in listed)
+if orphans:
+    print(" ".join(orphans))
 PY
 }
 
@@ -145,12 +163,23 @@ PY
   else
     problems=1
   fi
+  if [ -f "$USER_FLAGS" ]; then
+    say "user-flags.conf present"
+  else
+    warn "user-flags.conf missing — run the script without --check to write it"
+    problems=1
+  fi
   if [ -f "$VAULT_PATH/.obsidian/community-plugins.json" ]; then
     mapfile -t missing < <(plugin_problems)
     if [ "${#missing[@]}" -eq 0 ]; then
       say "all plugins in community-plugins.json are installed"
     else
       warn "plugins listed but not installed: ${missing[*]}"
+      problems=1
+    fi
+    mapfile -t orphans < <(orphaned_plugins)
+    if [ "${#orphans[@]}" -gt 0 ]; then
+      warn "plugin folders present but not enabled: ${orphans[*]}"
       problems=1
     fi
   else
@@ -339,7 +368,8 @@ if [ "$LAUNCH" -eq 1 ] && [ "$DRY_RUN" -eq 0 ]; then
     sleep 1
   done
   if [ "$socket_ready" -eq 1 ]; then
-    if version="$(obsidian version 2>/dev/null)"; then
+    version="$(obsidian version 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g' | tr -d '\r' || true)"
+    if [ -n "$version" ]; then
       say "CLI works: $version"
     else
       warn "CLI socket up but 'obsidian version' failed"
@@ -380,13 +410,22 @@ if [ "$DRY_RUN" -eq 1 ] && [ "$LAUNCH" -eq 1 ]; then
   fi
 fi
 
-# --- plugins: verify every listed plugin is actually installed -----------------
+# --- plugins: verify every listed plugin is installed, flag orphaned folders ----
 missing=()
+orphans=()
 if [ -f "$VAULT_PATH/.obsidian/community-plugins.json" ]; then
   mapfile -t missing < <(plugin_problems)
+  mapfile -t orphans < <(orphaned_plugins)
 fi
 if [ "${#missing[@]}" -eq 0 ]; then
   say "all plugins in community-plugins.json are installed"
 else
   warn "plugins listed but not installed: ${missing[*]}"
+fi
+if [ "${#orphans[@]}" -gt 0 ]; then
+  warn "plugin folders present but not enabled: ${orphans[*]}"
+fi
+
+if [ "$DRY_RUN" -eq 0 ]; then
+  info "restore complete"
 fi
