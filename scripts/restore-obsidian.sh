@@ -9,8 +9,8 @@ set -euo pipefail
 #   3. registers the vault and enables the CLI in ~/.config/obsidian/obsidian.json
 #   4. launches Obsidian, verifies the CLI + plugins, and trusts the vault
 #
-#   (the Obsidian theme is NOT restored — Omarchy manages it at the OS level
-#   via thpm; apply it yourself with `thpm` when it's missing)
+#   (the Obsidian theme is NOT restored — Omarchy manages it at the OS level;
+#   apply it through Omarchy's theme settings when it's missing)
 #
 # Also supports:
 #   --check   verify vault config, registration, CLI flag, and plugin installs;
@@ -159,7 +159,7 @@ PY
   fi
   theme="$(configured_theme)"
   if [ -n "$theme" ] && [ ! -f "$VAULT_PATH/.obsidian/themes/$theme/theme.css" ]; then
-    warn "theme '$theme' not installed (Omarchy manages themes) — apply it with: thpm"
+    warn "theme '$theme' not installed — Omarchy manages themes; apply it in Omarchy's theme settings"
     problems=1
   elif [ -n "$theme" ]; then
     say "theme '$theme' present"
@@ -252,11 +252,11 @@ else
   fi
 fi
 
-# The Obsidian theme is OS-managed (Omarchy/thpm), not in git — remind the user
-# to apply it when the configured theme is missing after a restore.
+# The Obsidian theme is OS-managed (Omarchy's own theme system), not in git —
+# remind the user to apply it when the configured theme is missing.
 theme="$(configured_theme)"
 if [ -n "$theme" ] && [ ! -f "$VAULT_PATH/.obsidian/themes/$theme/theme.css" ]; then
-  warn "theme '$theme' is not installed — apply it with: thpm (Omarchy manages themes)"
+  warn "theme '$theme' is not installed — apply it in Omarchy's theme settings (Omarchy manages themes)"
 fi
 
 # --- 2. user-flags.conf (always overwrite) ------------------------------------
