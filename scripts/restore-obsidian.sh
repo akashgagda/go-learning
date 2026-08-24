@@ -9,6 +9,9 @@ set -euo pipefail
 #   3. registers the vault and enables the CLI in ~/.config/obsidian/obsidian.json
 #   4. launches Obsidian, verifies the CLI + plugins, and trusts the vault
 #
+#   (the Obsidian theme is NOT restored — Omarchy manages it at the OS level
+#   via thpm; apply it yourself with `thpm` when it's missing)
+#
 # Also supports:
 #   --check   verify vault config, registration, CLI flag, and plugin installs;
 #             touches nothing
@@ -93,6 +96,13 @@ if missing:
 PY
 }
 
+# configured_theme: print the cssTheme from appearance.json ("" if unset).
+configured_theme() {
+  python3 -c 'import json, sys
+d = json.load(open(sys.argv[1]))
+print(d.get("cssTheme", ""))' "$VAULT_PATH/.obsidian/appearance.json" 2>/dev/null || true
+}
+
 # check_vault: verify config presence, obsidian binary, vault registration + CLI
 # flag in obsidian.json, and plugin installs. Touches nothing. Exits non-zero on
 # any problem, so it can be used in scripts/CI.
@@ -146,6 +156,13 @@ PY
   else
     warn "community-plugins.json missing"
     problems=1
+  fi
+  theme="$(configured_theme)"
+  if [ -n "$theme" ] && [ ! -f "$VAULT_PATH/.obsidian/themes/$theme/theme.css" ]; then
+    warn "theme '$theme' not installed (Omarchy manages themes) — apply it with: thpm"
+    problems=1
+  elif [ -n "$theme" ]; then
+    say "theme '$theme' present"
   fi
   if [ "$problems" -eq 0 ]; then
     say "all checks passed"
@@ -233,6 +250,13 @@ else
     (cd "$REPO_ROOT" && git restore --source=HEAD --worktree -- notes/.obsidian)
     say "restored (ignored files like workspace.json are left untouched)"
   fi
+fi
+
+# The Obsidian theme is OS-managed (Omarchy/thpm), not in git — remind the user
+# to apply it when the configured theme is missing after a restore.
+theme="$(configured_theme)"
+if [ -n "$theme" ] && [ ! -f "$VAULT_PATH/.obsidian/themes/$theme/theme.css" ]; then
+  warn "theme '$theme' is not installed — apply it with: thpm (Omarchy manages themes)"
 fi
 
 # --- 2. user-flags.conf (always overwrite) ------------------------------------
