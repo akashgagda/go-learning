@@ -8,7 +8,7 @@ tags: [go, chapter]
 
 # Dependency Injection
 
-> Status: 🔄 IN PROGRESS
+> Status: 🔄 IN PROGRESS — working through the TDD checklist below.
 
 ## Concepts learned
 - 

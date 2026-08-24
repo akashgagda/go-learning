@@ -6,7 +6,6 @@ kanban-plugin: board
 
 ## 📥 To Do
 
-- [ ] Next chapter (from Learn Go with Tests)
 
 
 ## 🔄 In Progress
