@@ -8,7 +8,7 @@ date: 2026-08-24
 
 # Mocking
 
-> Status: ✅ COMPLETE — revisit pending: clear remaining fog on the timeline spy + how one object plays both roles.
+> Status: ✅ COMPLETE — fog cleared: timeline spy, one-object-two-roles, `&` vs `*`, and how the two files connect through `package main` + interfaces.
 
 ## Concepts learned
 - Slow tests hurt — `time.Sleep` in code made a test take 3s; injecting a fake sleeper made it ~0s.
@@ -32,7 +32,7 @@ func Countdown(out io.Writer, sleeper Sleeper) {
 - `bytes.Buffer` keeps the actual text (read back with `.String()`); a spy's `Write` throws the bytes away and only logs "write happened".
 - `want := []string{...}` slices can't be compared with `==`; use `reflect.DeepEqual`.
 - Backtick strings capture tabs literally — the countdown `want` must be flush-left.
-- **REVISIT:** how the timeline spy plays both `io.Writer` and `Sleeper` at once (`Countdown(spy, spy)`).
+- **FOG CLEARED:** the timeline spy plays both `io.Writer` and `Sleeper` at once (`Countdown(spy, spy)`) because a struct can implement many interfaces; `&` = action (address-of), `*T` = type ("pointer to T"), works for any type; `_test.go` files only load under `go test`; both files connect via `package main`.
 
 ## TDD checklist
 - [x] #task Write the failing test
