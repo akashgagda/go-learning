@@ -3,12 +3,13 @@ package main
 import (
 	"fmt"
 	"io"
+	"os"
 )
 
-func main() {
-
+func Greet(buffer io.Writer, name string) {
+	fmt.Fprintf(buffer, "Hello, %s", name)
 }
 
-func Greet(writer io.Writer, name string) {
-	fmt.Fprintf(writer, "Hello, %s", name)
+func main() {
+	Greet(os.Stdout, "Elodie")
 }

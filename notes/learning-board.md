@@ -10,7 +10,7 @@ kanban-plugin: board
 
 ## 🔄 In Progress
 
-- [ ] 08 - Dependency Injection
+
 
 ## ✅ Done
 
@@ -21,6 +21,8 @@ kanban-plugin: board
 - [x] 05 - Structs, Methods & Interfaces
 - [x] 06 - Pointers and Errors
 - [x] 07 - Maps
+- [x] 08 - Dependency Injection
+- [x] 09 - Mocking
 
 
 
