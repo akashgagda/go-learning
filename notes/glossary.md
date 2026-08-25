@@ -5,7 +5,7 @@ date: 2026-08-24
 tags: [go, glossary]
 ---
 
-# Go Vocabulary (chapters 1-8)
+# Go Vocabulary (chapters 1-9)
 
 All terms in Go-only terms, with examples from the course code.
 
@@ -71,6 +71,12 @@ All terms in Go-only terms, with examples from the course code.
 | **`fmt.Fprintf`**          | Formats like `fmt.Printf` but writes into the given `io.Writer` instead of stdout — the same format string works anywhere.                                                                              | `fmt.Fprintf(writer, "Hello, %s", name)`                                             |
 | **`bytes.Buffer`**         | An in-memory `io.Writer` for tests: capture what a function writes, then read it back with `.String()`.                                                                                                 | `buffer := bytes.Buffer{}` → `Greet(&buffer, "Chris")` → `buffer.String()`           |
 | **Separation of concerns** | Each piece does one job: `Greet` only formats and writes; choosing the destination (stdout in the app, buffer in the test) belongs to the caller.                                                       | test passes a `bytes.Buffer`, the app would pass `os.Stdout` — `Greet` never changes |
+| **Mock / spy**             | A fake tool the test injects in place of a real one; it records how it was used instead of doing the real work (sleeping 3s, reading the screen).                                                       | `SpySleeper` stands in for the real sleeper in tests                               |
+| **Count spy**              | The simplest spy: only counts how many times a method was called.                                                                                                                                   | `SpySleeper.Calls` increments on every `Sleep()`                                   |
+| **Timeline spy**           | A spy that records the ORDER of calls — catches sequence bugs (like "sleep before every print") that a count spy can't see.                                                                         | `SpyCountdownOperations.Calls` logs `sleep`/`write` in order                      |
+| **Multiple interfaces**    | One type can satisfy many interfaces at once, just by having all their methods.                                                                                                                      | `Countdown(spy, spy)` — one struct is both `Sleeper` and `io.Writer`              |
+| **`reflect.DeepEqual`**    | Deep comparison for values that can't use `==` (slices, structs); tells whether two values are deeply equal.                                                                                         | `reflect.DeepEqual(got, want)`                                                    |
+| **Raw string literal**     | A string in backticks: nothing inside is escaped, so tabs and newlines stay literal.                                                                                                                 | the countdown `want` built with backticks                                         |
 
 ## Official references (pkg.go.dev)
 - `testing.TB` — the interface common to `*testing.T`, `*testing.B`, and `*testing.F`; `Helper()` marks a helper so failure lines point at the caller. https://pkg.go.dev/testing#TB
@@ -88,6 +94,8 @@ All terms in Go-only terms, with examples from the course code.
 - `append` — grow a slice; always assign the result. https://pkg.go.dev/builtin#append
 - `range` — iterate over slices and maps. https://pkg.go.dev/ref/spec#For_range
 - `testing` — `TestXxx` functions, `t.Run` subtests, and `BenchmarkXxx`. https://pkg.go.dev/testing
+- `reflect.DeepEqual` — compare values that don't support `==` (e.g. slices). https://pkg.go.dev/reflect#DeepEqual
+- `time.Sleep` — pause a goroutine; the real-world dependency chapter 09 replaces with an injected sleeper. https://pkg.go.dev/time#Sleep
 
 ## Mental anchors
 - What is the difference between a receiver and a parameter?::A receiver is which type owns the behavior (`c Circle`); a parameter is what extra input the behavior needs. That's the whole difference between a method and a function. #flashcards
@@ -105,3 +113,7 @@ All terms in Go-only terms, with examples from the course code.
 - Why does `append` always appear as `slice = append(slice, x)`?::`append` may grow the slice and returns the new one; ignoring the return value silently loses the growth. #flashcards
 - What does a bare `return` do in a function with named returns?::It returns the current values of the named return variables — no expression needed. #flashcards
 - What makes a failing subtest easy to spot?::Each `t.Run("name", ...)` scenario fails as `TestXxx/name` in the output, so you can see exactly which case broke instead of a single test failing. #flashcards
+- What is mocking?::Replacing a real tool with a fake (a spy) in tests so you can control it and inspect how it was used — instead of waiting 3 real seconds or reading the screen. #flashcards
+- How does a type become an `io.Writer`?::By having the method `Write(p []byte) (n int, err error)` — that's all it takes. #flashcards
+- Why can the timeline spy be passed twice to `Countdown`?::Because one struct can satisfy many interfaces at once: `SpyCountdownOperations` has `Sleep()` (a `Sleeper`) and `Write(...)` (an `io.Writer`). #flashcards
+- What bug does a count spy miss that a timeline spy catches?::Order. A count spy only knows HOW MANY times a method ran; a timeline spy records the SEQUENCE, so it catches a "sleep before every print" swap a counter can't see. #flashcards
