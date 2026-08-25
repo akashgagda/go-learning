@@ -25,7 +25,8 @@ go test ./01-hello-world/...
 - `05-structs-methods-interfaces` - structs, methods, interfaces
 - `06-pointers-and-errors` - pointers, error handling
 - `07-maps` - maps, sentinel errors, subtests
-- `08-dependency-injection` - dependency injection (current)
+- `08-dependency-injection` - dependency injection
+- `09-mocking` - mocking with dependency injection (next: `10-concurrency`)
 
 ## Notes (Obsidian)
 
