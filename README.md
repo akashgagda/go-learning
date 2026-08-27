@@ -1,51 +1,26 @@
 # Go Learning
 
-Working through [Learn Go with Tests](https://quii.gitbook.io/learn-go-with-tests/).
-
-## Layout
-
-Single module with one package per chapter. Run all tests from the root:
+[Learn Go with Tests](https://quii.gitbook.io/learn-go-with-tests/) — one package per chapter, test-first.
 
 ```bash
-go test ./...
-```
-
-Run tests for one chapter:
-
-```bash
-go test ./01-hello-world/...
+go test ./...              # all
+go test ./01-hello-world/...  # one chapter
 ```
 
 ## Chapters
 
-- `01-hello-world` - first program, testing basics
-- `02-integers` - integers, table-driven tests
-- `03-iteration` - loops, benchmarks
-- `04-arrays-and-slices` - slices, collection functions
-- `05-structs-methods-interfaces` - structs, methods, interfaces
-- `06-pointers-and-errors` - pointers, error handling
-- `07-maps` - maps, sentinel errors, subtests
-- `08-dependency-injection` - dependency injection
-- `09-mocking` - mocking with dependency injection
-- `10-concurrency` - concurrency, maps of results (website checker)
+`01-hello-world` → `10-concurrency` (see `notes/learning-board.md`).
 
-## Notes (Obsidian)
+## Notes
 
-`notes/` is an Obsidian vault: `dashboard.md` + `learning-board.md` are load-bearing (progress + kanban), one note per chapter, `glossary.md` archived vocabulary (wording/sentence/style is now **book-owned** via the GitBook MCP: `searchDocumentation` → `getPage` verbatim).
-
-Recreate the vault setup (config, plugins, registration) on a new machine:
+Vault `dashboard.md` + `learning-board.md` load-bearing, `glossary.md` archived (book pedagogy via MCP `searchDocumentation→getPage`).
 
 ```bash
-./scripts/restore-obsidian.sh
+./scripts/restore-obsidian.sh         # restore vault
+./scripts/restore-obsidian.sh --check # verify
+./scripts/restore-obsidian.sh --backup # backup notes/
 ```
 
-Verify without touching anything, or commit the current vault state:
+## Agents
 
-```bash
-./scripts/restore-obsidian.sh --check
-./scripts/restore-obsidian.sh --backup
-```
-
-## Agents (opencode)
-
-This workspace is set up for [opencode](https://opencode.ai): the global `~/.config/opencode/opencode.json` holds the Learn Go With Tests (book pedagogy — wording/sentence/style), gopls, and pkgsite MCP servers and pre-approves the Go toolchain commands. Skills stack is `learn-go-with-tests` + `concept-explainer` / `socratic-tutor` / `study-habit-coach` (3 companions, no deeptutor).
+`~/.config/opencode/opencode.json` — `learn-go-with-tests` (book pedagogy) + `gopls` + `pkgsite` MCPs. Skills: `learn-go-with-tests` + 3 companions.
