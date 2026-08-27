@@ -31,7 +31,7 @@ go test ./01-hello-world/...
 
 ## Notes (Obsidian)
 
-`notes/` is an Obsidian vault: `dashboard.md` + `learning-board.md` are load-bearing (progress + kanban), one note per chapter, `glossary.md` archived vocabulary (anchor source is now **book-owned** via the GitBook MCP: `searchDocumentation` → `getPage` verbatim sentences, citation `none`).
+`notes/` is an Obsidian vault: `dashboard.md` + `learning-board.md` are load-bearing (progress + kanban), one note per chapter, `glossary.md` archived vocabulary (anchor source is now **book-owned** via the GitBook MCP: `searchDocumentation` → `getPage` verbatim sentences).
 
 Recreate the vault setup (config, plugins, registration) on a new machine:
 
