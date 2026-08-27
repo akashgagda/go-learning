@@ -24,11 +24,10 @@ existing chapter note in `notes/` before touching code.
   "FOG CLEARED:" line in the note's mental-model section is the conceptual
   half of Done — the test-suite green is the other half. Move the card
   on the board yourself once all of that is true.
-- Respect the learner's notes. Three files are load-bearing — read them
+- Respect the learner's notes. Two files are load-bearing — read them
   before teaching or reviewing:
   - `notes/dashboard.md` — at-a-glance progress; also home of the ` ```tasks ``` ` open-tasks block
   - `notes/learning-board.md` — kanban board; the source of truth for chapter status
-  - `notes/glossary.md` — vocabulary + spaced-repetition flashcards (`#flashcards` lines)
 - Don't commit or push to git unless the learner asks — commits are theirs to make.
 
 ## Project facts
@@ -45,16 +44,18 @@ existing chapter note in `notes/` before touching code.
   `getPage`), then https://github.com/quii/learn-go-with-tests, then the offline
   copy `learn-go-with-tests.pdf` in the workspace root.
 - `notes/` is an Obsidian vault: `dashboard.md` is the at-a-glance home, the kanban
-  `learning-board.md` tracks chapters, `glossary.md` collects vocabulary, and
-  `attachments/` holds images. `chapter.md` in `_templates/` is the note template
-  (Templater syntax). New chapter notes MUST be created from `_templates/chapter.md`
-  so frontmatter, status banner, TDD checklist, and vault footer all stay consistent.
-  Chapter notes carry frontmatter (`status: todo|in-progress|complete`, `tags: [go, chapter]`),
-  a status banner, and a vault-navigation footer.
-- Flashcards: `#flashcards` lines in chapter notes and the glossary are scheduled by
-  the Obsidian Spaced Repetition plugin — treat them as the review layer. The
-  glossary's "Mental anchors" section is the canonical plain-words anchor source;
-  the `learn-go-with-tests` skill defers to it.
+  `learning-board.md` tracks chapters, and `attachments/` holds images.
+  `notes/glossary.md` remains as archived vocabulary but is **not** the anchor
+  source — plain-words anchors are book-owned via the GitBook MCP
+  (`searchDocumentation` → `getPage`). `chapter.md` in `_templates/` is the note
+  template (Templater syntax). New chapter notes MUST be created from
+  `_templates/chapter.md` so frontmatter, status banner, TDD checklist, and vault
+  footer all stay consistent. Chapter notes carry frontmatter
+  (`status: todo|in-progress|complete`, `tags: [go, chapter]`), a status banner,
+  and a vault-navigation footer.
+- Flashcards: `#flashcards` lines in chapter notes are scheduled by the Obsidian
+  Spaced Repetition plugin — treat them as the review layer. Anchor phrasing
+  comes from book sentences via the MCP; do not pull from `notes/glossary.md`.
 - Vault tooling: recreate the vault setup on a fresh machine with
   `./scripts/restore-obsidian.sh` (`--check` verifies without changing anything,
   `--backup` commits the current vault state to git).
