@@ -48,4 +48,4 @@ Verify without touching anything, or commit the current vault state:
 
 ## Agents (opencode)
 
-This workspace is set up for [opencode](https://opencode.ai): `.mcp.json` and the global `~/.config/opencode/opencode.json` hold the Learn Go With Tests (book-owned anchors), gopls, and pkgsite MCP servers and pre-approve the Go toolchain commands. Skills stack is `learn-go-with-tests` + `concept-explainer` / `socratic-tutor` / `study-habit-coach` (3 companions, no deeptutor).
+This workspace is set up for [opencode](https://opencode.ai): the global `~/.config/opencode/opencode.json` holds the Learn Go With Tests (book-owned anchors), gopls, and pkgsite MCP servers and pre-approves the Go toolchain commands. Skills stack is `learn-go-with-tests` + `concept-explainer` / `socratic-tutor` / `study-habit-coach` (3 companions, no deeptutor).

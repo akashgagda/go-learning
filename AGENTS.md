@@ -37,9 +37,7 @@ existing chapter note in `notes/` before touching code.
   `notes/learning-board.md` is the source of truth for which chapters exist and their
   status — check it rather than assuming.
 - Run all tests: `go test ./...`; one chapter: `go test ./09-mocking/...`
-- MCP servers in `.mcp.json`: `learn-go-with-tests` (GitBook HTTP — `searchDocumentation`,
-  `getPage` for chapter content), `gopls` (Go intelligence), `pkgsite` (pkg.go.dev).
-  Use the book MCP before falling back to GitHub or the PDF.
+- MCP servers in global `~/.config/opencode/opencode.json` (opencode): `learn-go-with-tests` (GitBook HTTP — `searchDocumentation`, `getPage` for chapter content), `gopls` (Go intelligence), `pkgsite` (pkg.go.dev). Use the book MCP before falling back to GitHub or the PDF.
 - Chapter content sources, in priority order: the GitBook MCP (`searchDocumentation`,
   `getPage`), then https://github.com/quii/learn-go-with-tests, then the offline
   copy `learn-go-with-tests.pdf` in the workspace root.
