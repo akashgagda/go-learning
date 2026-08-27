@@ -49,4 +49,4 @@ func greetingPrefix(language string) (prefix string) {
 - What does `t.Helper()` change about failure output?::It marks the function as a helper so failures report the call-site line, not the line inside the helper. #flashcards
 
 ---
-[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary (archived)]] · [[learning-board|📋 Board]]

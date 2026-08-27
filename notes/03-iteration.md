@@ -41,4 +41,4 @@ func Repeat(character string) string {
 - How does `strings.Builder` avoid those allocations?::It writes into a growable buffer and returns a single string at the end via `.String()`, so it never copies the accumulated value per append. #flashcards
 
 ---
-[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary (archived)]] · [[learning-board|📋 Board]]

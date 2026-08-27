@@ -42,4 +42,4 @@ func Greet(writer io.Writer, name string) {
 - What's the real difference between `Printf` and `Fprintf`?::Not screen vs buffer — `Printf`'s destination is fixed to stdout; `Fprintf` lets the caller pass any writer. #flashcards
 
 ---
-[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary (archived)]] · [[learning-board|📋 Board]]

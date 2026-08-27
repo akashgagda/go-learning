@@ -34,5 +34,6 @@ date: "<% tp.date.now('YYYY-MM-DD') %>"
 `go test ./<% tp.file.title %>/...` → 
 
 ## Self-test
-<!-- One card per idea. Format: Question::Answer  #flashcards -->
-- What is the key idea from this chapter?::Answer in your own words #flashcards
+<!-- One card per idea. Format: Question::Answer  #flashcards
+     Anchor phrasing: reuse the book's sentence via the MCP (searchDocumentation -> getPage verbatim), citation none. -->
+- What is the key idea from this chapter?::Answer in your own words — use the book's sentence via the MCP #flashcards

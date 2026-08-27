@@ -1,13 +1,17 @@
 ---
 title: Go Vocabulary
-status: done
+status: archived
 date: 2026-08-24
-tags: [go, glossary]
+tags: [go, glossary, archived]
+archived: true
+archived-note: Anchor source is now book-owned via GitBook MCP (searchDocumentation -> getPage verbatim); this file remains as archived reference only. Updated 2026-08-28.
 ---
 
-# Go Vocabulary (chapters 1-9)
+# Go Vocabulary (chapters 1-9) — ARCHIVED
 
-All terms in Go-only terms, with examples from the course code.
+> **Archived — not load-bearing.** As of 2026-08-28 plain-words anchors are **book-owned** via the GitBook MCP (`searchDocumentation` → `getPage` verbatim sentences, citation `none`). This file is kept as historical reference only; the tutor no longer reads it for anchors and no new terms are added here. See `AGENTS.md` and `learn-go-with-tests` skill for the current source-of-truth.
+
+All terms in Go-only terms, with examples from the course code (pre-book-owned snapshot, chapters 1-9).
 
 | Term                       | Meaning                                                                                                                                                                                                 | Example                                                                              |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
@@ -97,7 +101,10 @@ All terms in Go-only terms, with examples from the course code.
 - `reflect.DeepEqual` — compare values that don't support `==` (e.g. slices). https://pkg.go.dev/reflect#DeepEqual
 - `time.Sleep` — pause a goroutine; the real-world dependency chapter 09 replaces with an injected sleeper. https://pkg.go.dev/time#Sleep
 
-## Mental anchors
+## Mental anchors — ARCHIVED (book-owned via MCP; no longer scheduled)
+
+> Flashcards below are archived. New sessions use book sentences via the MCP; chapter notes `#flashcards` remain the active review layer. This section is retained for history — Obsidian SRS will still schedule it unless you remove the `#flashcards` tags.
+
 - What is the difference between a receiver and a parameter?::A receiver is which type owns the behavior (`c Circle`); a parameter is what extra input the behavior needs. That's the whole difference between a method and a function. #flashcards
 - What is the difference between an interface and a struct?::An interface lists what a value can do; a struct holds what a value contains. #flashcards
 - What is the difference between a concrete type and an interface?::The concrete type is the real thing with real data; the interface is the job description it qualifies for. #flashcards

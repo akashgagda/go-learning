@@ -39,4 +39,4 @@ func ExampleAdd() {
 - What changes if you remove the `// Output: 6` comment from `ExampleAdd`?::The example still compiles but is never executed, so it can rot silently without failing the suite. #flashcards
 
 ---
-[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary (archived)]] · [[learning-board|📋 Board]]

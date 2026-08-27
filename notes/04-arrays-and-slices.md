@@ -48,4 +48,4 @@ func SumAllTails(numbersToSum ...[]int) []int {
 - Why doesn't the empty slice panic in `SumAllTails`?::`len(numbers) == 0` is checked first, so `numbers[1:]` never runs on an empty slice — that would panic with `slice bounds out of range [1:0]`. #flashcards
 
 ---
-[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary (archived)]] · [[learning-board|📋 Board]]

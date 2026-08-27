@@ -68,4 +68,4 @@ func (w *Wallet) Withdraw(amount Bitcoin) error {
 - Why does `errors.Is(err, ErrInsufficientFunds)` return false when the error was built with `%v` instead of `%w`?::`%v` copies the message into a brand-new, unrelated error value — the chain is broken and there's nothing to unwrap. `%w` keeps a link to the original error, so `errors.Is` can walk the chain and find the match. #flashcards
 
 ---
-[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary (archived)]] · [[learning-board|📋 Board]]

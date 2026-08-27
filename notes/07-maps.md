@@ -87,4 +87,4 @@ go test ./07-maps → ok (TestSearch, TestAdd, TestUpdate, TestDelete — all 8 
 - What happens when you write to a nil map, and why?::Runtime panic "assignment to entry in nil map" — a nil map has no allocated hmap table to store the entry. Reads are safe (no table ≡ empty). Initialize with Dictionary{} or make() #flashcards
 
 ---
-[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary (archived)]] · [[learning-board|📋 Board]]

@@ -45,4 +45,4 @@ not done
 ## Links
 
 - [[learning-board|📋 Learning board (kanban)]]
-- [[glossary|📖 Go vocabulary]]
+- [[glossary|📖 Go vocabulary (archived — book-owned anchors via MCP)]]

@@ -50,4 +50,4 @@ func Countdown(out io.Writer, sleeper Sleeper) {
 - Why can the timeline spy be passed twice to Countdown?::Because it implements BOTH interfaces: it has `Sleep()` (Sleeper) and `Write(...)` (io.Writer). #flashcards
 
 ---
-[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary (archived)]] · [[learning-board|📋 Board]]

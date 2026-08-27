@@ -73,4 +73,4 @@ for _, tt := range areaTests {
 - What does that prove about how interfaces work?::Satisfaction is checked at compile time at every call site — a type is a `Shape` only if it has the required methods; the compiler, not the runtime, enforces it. #flashcards
 
 ---
-[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary]] · [[learning-board|📋 Board]]
+[[dashboard|🏠 Dashboard]] · [[glossary|📖 Glossary (archived)]] · [[learning-board|📋 Board]]

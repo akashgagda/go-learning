@@ -31,8 +31,7 @@ go test ./01-hello-world/...
 
 ## Notes (Obsidian)
 
-`notes/` is an Obsidian vault: `dashboard.md` (progress), `learning-board.md`
-(kanban board), `glossary.md` (vocabulary + flashcards), and one note per chapter.
+`notes/` is an Obsidian vault: `dashboard.md` + `learning-board.md` are load-bearing (progress + kanban), one note per chapter, `glossary.md` archived vocabulary (anchor source is now **book-owned** via the GitBook MCP: `searchDocumentation` → `getPage` verbatim sentences, citation `none`).
 
 Recreate the vault setup (config, plugins, registration) on a new machine:
 
@@ -49,4 +48,4 @@ Verify without touching anything, or commit the current vault state:
 
 ## Agents (Command Code / opencode)
 
-This workspace is set up for both [Command Code](https://commandcode.ai) (`cmd`) and [opencode](https://opencode.ai): `.mcp.json` + `.commandcode/settings.json` (Command Code) and the global `~/.config/opencode/opencode.json` (opencode) hold the Learn Go With Tests, gopls, and pkgsite MCP servers and pre-approve the Go toolchain commands.
+This workspace is set up for both [Command Code](https://commandcode.ai) (`cmd`) and [opencode](https://opencode.ai): `.mcp.json` + `.commandcode/settings.json` (Command Code) and the global `~/.config/opencode/opencode.json` (opencode) hold the Learn Go With Tests (book-owned anchors), gopls, and pkgsite MCP servers and pre-approve the Go toolchain commands. Skills stack is `learn-go-with-tests` + `concept-explainer` / `socratic-tutor` / `study-habit-coach` (3 companions, no deeptutor).
