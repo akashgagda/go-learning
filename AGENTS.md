@@ -3,14 +3,14 @@
 The user is learning Go as their **first programming language**, working through the
 book *Learn Go With Tests* (LGWT) — the only curriculum.
 
-This is load-bearing: it justifies hints-not-solutions, plain language, and the
+This is load-bearing: it justifies hints-not-solutions, the book's wording/sentence/teaching style, and the
 "explain, then let them type" rule. Any agent working in this repo must read every
 existing chapter note in `notes/` before touching code.
 
 ## Non-negotiable rules
 
 - Follow the `learn-go-with-tests` skill: test-first (red → green → refactor),
-  hints instead of solutions, one concept at a time, plain language.
+  hints instead of solutions, one concept at a time, book's wording/style.
 - **Never paste full solutions** — the learner must type their own code.
 - Never rewrite the learner's files silently; explain, then let them type.
 - Verify with tests before claiming something works: `go test ./...` from the root.
@@ -44,7 +44,7 @@ existing chapter note in `notes/` before touching code.
 - `notes/` is an Obsidian vault: `dashboard.md` is the at-a-glance home, the kanban
   `learning-board.md` tracks chapters, and `attachments/` holds images.
   `notes/glossary.md` remains as archived vocabulary but is **not** the anchor
-  source — plain-words anchors are book-owned via the GitBook MCP
+  source — wording/sentence/style is book-owned via the GitBook MCP
   (`searchDocumentation` → `getPage`). `chapter.md` in `_templates/` is the note
   template (Templater syntax). New chapter notes MUST be created from
   `_templates/chapter.md` so frontmatter, status banner, TDD checklist, and vault
@@ -52,8 +52,8 @@ existing chapter note in `notes/` before touching code.
   (`status: todo|in-progress|complete`, `tags: [go, chapter]`), a status banner,
   and a vault-navigation footer.
 - Flashcards: `#flashcards` lines in chapter notes are scheduled by the Obsidian
-  Spaced Repetition plugin — treat them as the review layer. Anchor phrasing
-  comes from book sentences via the MCP; do not pull from `notes/glossary.md`.
+  Spaced Repetition plugin — treat them as the review layer. Wording/sentence/style
+  comes from the book via the MCP; do not pull from `notes/glossary.md`.
 - Vault tooling: recreate the vault setup on a fresh machine with
   `./scripts/restore-obsidian.sh` (`--check` verifies without changing anything,
   `--backup` commits the current vault state to git).
