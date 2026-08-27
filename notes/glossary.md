@@ -9,7 +9,7 @@ archived-note: Anchor source is now book-owned via GitBook MCP (searchDocumentat
 
 # Go Vocabulary (chapters 1-9) — ARCHIVED
 
-> **Archived — not load-bearing.** As of 2026-08-28 plain-words anchors are **book-owned** via the GitBook MCP (`searchDocumentation` → `getPage` verbatim sentences, citation `none`). This file is kept as historical reference only; the tutor no longer reads it for anchors and no new terms are added here. See `AGENTS.md` and `learn-go-with-tests` skill for the current source-of-truth.
+> **Archived — not load-bearing.** As of 2026-08-28 wording/sentence/style is **book-owned** via the GitBook MCP (`searchDocumentation` → `getPage` verbatim). This file is kept as historical reference only; the tutor no longer reads it and no new terms are added here. See `AGENTS.md` and `learn-go-with-tests` skill for the current source-of-truth.
 
 All terms in Go-only terms, with examples from the course code (pre-book-owned snapshot, chapters 1-9).
 
