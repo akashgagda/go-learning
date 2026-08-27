@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(go test *)",
+      "Shell(go vet *)",
+      "Shell(go fmt *)",
+      "Shell(gofmt -w *)",
+      "Shell(go run *)",
+      "Shell(go build *)",
+      "Shell(go doc *)",
+      "Shell(go mod *)",
+      "Shell(go env *)",
+      "Shell(golangci-lint *)",
+      "Shell(obsidian *)"
+    ]
+  }
+}
