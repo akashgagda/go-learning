@@ -26,7 +26,8 @@ go test ./01-hello-world/...
 - `06-pointers-and-errors` - pointers, error handling
 - `07-maps` - maps, sentinel errors, subtests
 - `08-dependency-injection` - dependency injection
-- `09-mocking` - mocking with dependency injection (next: `10-concurrency`)
+- `09-mocking` - mocking with dependency injection
+- `10-concurrency` - concurrency, maps of results (website checker)
 
 ## Notes (Obsidian)
 
@@ -45,3 +46,7 @@ Verify without touching anything, or commit the current vault state:
 ./scripts/restore-obsidian.sh --check
 ./scripts/restore-obsidian.sh --backup
 ```
+
+## Agents (Command Code / opencode)
+
+This workspace is set up for both [Command Code](https://commandcode.ai) (`cmd`) and [opencode](https://opencode.ai): `.mcp.json` + `.commandcode/settings.json` (Command Code) and the global `~/.config/opencode/opencode.json` (opencode) hold the Learn Go With Tests, gopls, and pkgsite MCP servers and pre-approve the Go toolchain commands.
