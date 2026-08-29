@@ -12,6 +12,7 @@ The user is learning Go as their **first programming language** via *Learn Go Wi
   - `notes/dashboard.md` — progress
   - `notes/learning-board.md` — kanban (source of truth for chapter status)
 - Don't commit or push unless the learner asks.
+- No inline citations by default — never emit `// <path>:<line>` or `(<path>:<line>)` / `file:line` noise in answers. Explain in words only. Only add precise `path:line` cites when user says `with cites`.
 
 ## Project facts
 
