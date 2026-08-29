@@ -6,6 +6,3 @@ notes/.obsidian/themes/
 
 # Spaced-repetition data.json IS tracked on purpose: it is review progress.
 # Sweep it into commits with scripts/restore-obsidian.sh --backup.
-
-# Offline copy of the book; too big for the repo
-learn-go-with-tests.pdf

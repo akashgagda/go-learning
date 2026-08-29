@@ -17,7 +17,7 @@ The user is learning Go as their **first programming language** via *Learn Go Wi
 ## Project facts
 
 - Module `example.com/go-learning` (root `go.mod`). One package per numbered chapter (`01-hello-world` … `10-concurrency`); kanban board is the source of truth.
-- MCP servers in global `~/.config/opencode/opencode.json`: `learn-go-with-tests` (`searchDocumentation`/`getPage`), `gopls`, `pkgsite`. Use the book MCP before GitHub or `learn-go-with-tests.pdf`.
+- MCP servers in global `~/.config/opencode/opencode.json`: `learn-go-with-tests` (`searchDocumentation`/`getPage`), `gopls`, `pkgsite`. Use the book MCP for teaching; GitHub repo for REVIEW only.
 - `notes/` is an Obsidian vault: `dashboard.md`, `learning-board.md`, `attachments/`. `glossary.md` is archived — wording/style is book-owned via MCP. `_templates/chapter.md` scaffolds new notes (frontmatter `status: todo|in-progress|complete`, `tags: [go, chapter]`).
 - Flashcards `#flashcards` in chapter notes via Obsidian SRS — book sentences via MCP.
 
